@@ -6,12 +6,16 @@ import './Loginpage.css';
 import axios from 'axios';
 import Loading from '../../components/Loading';
 import ErrorMessage from '../../components/ErrorMessage';
+import {useNavigate} from 'react-router-dom';
 const Loginpage = () => {
-
+    const navigate=useNavigate();
     const [email,setEmail]=useState("");
+    const [id,setid]=useState("");
+    const [message, setMessage] = useState(null);
     const [password,setPassword]=useState("");
     const [error,setError]=useState(false);
     const [loading,setLoading]=useState(false);
+    const[homepage,setHome]=useState(false);
     useEffect(()=>{
 
     },[])
@@ -20,10 +24,12 @@ const Loginpage = () => {
 
         try{
             const config={
-                headers:{
-                    "Content-type":"application/json"
-
-                }
+              baseURL: "//localhost:5000",
+              origin: true,
+              withCredentials: false,
+              headers:{
+                "Content-type":"application/json"
+              }
             }
             setLoading(true);
             
@@ -32,16 +38,21 @@ const Loginpage = () => {
             const { data } = await axios.post("/api/users/login",
             {
                 email,
-                password,
+                password,  
             },
             config  
             );
+            console.log("debug")
             console.log(data);
             localStorage.setItem('UserInfo',JSON.stringify(data));
             setLoading(false);
+            setHome(true);
+            setid(data._id);
         }
         catch(error){
             setError(error.response);
+            setLoading(false);
+            setMessage(error.response.data.message)
             console.log(error.response.data);
         }
       }
@@ -50,7 +61,9 @@ const Loginpage = () => {
     <MainScreen title="LOGIN">
          <div className="loginContainer">
             {loading && <Loading/>}
-            {error && <ErrorMessage/>}
+            {/* {error && <ErrorMessage/>} */}
+            {message && <ErrorMessage variant='danger'>{message}</ErrorMessage>}
+            {homepage && id && navigate(`/view/${id}`)}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="formBasicEmail">
             <Form.Label className='emaill'>Email address</Form.Label>
@@ -72,7 +85,7 @@ const Loginpage = () => {
             />
           </Form.Group>
           <Button variant="primary" type="submit">
-            Submit
+            Log In
           </Button>
         </Form>
         <Row className="py-3">

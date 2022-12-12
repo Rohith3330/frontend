@@ -1,6 +1,8 @@
 import React from 'react'
 import {Navbar,Nav,NavDropdown,Form,FormControl,Container} from 'react-bootstrap'
+import {useNavigate} from 'react-router-dom';
 const Header = () => {
+    const navigate=useNavigate();
   return (
     <Navbar bg="primary" expand="lg" variant='dark'>
         <Container>
@@ -8,19 +10,20 @@ const Header = () => {
         <Navbar.Toggle aria-controls='basic-navbar-nav'/>
         <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='m-auto'>
-            <Form inline>
+            {/* <Form inline>
                 <FormControl type="text" placeholder="Search" classname="mr-sm-2"/>
-            </Form>
+            </Form> */}
             </Nav>
             <Nav >
-                <Nav.Link href="#home">My pokemon</Nav.Link>
+                <Nav.Link href="/upload">Upload</Nav.Link>
+                <Nav.Link href="/explore">Explore</Nav.Link>
                 <NavDropdown title="User" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">My profile</NavDropdown.Item>
-                
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">
-                    Log Out
-                </NavDropdown.Item>
+                    <NavDropdown.Item>My profile</NavDropdown.Item>
+                    {/* <NavDropdown.Divider /> */}
+                <NavDropdown.Item onClick={()=>{
+                    localStorage.removeItem('UserInfo');
+                    navigate("/");
+                }}>Log Out</NavDropdown.Item>
                 </NavDropdown>
             </Nav>
             
